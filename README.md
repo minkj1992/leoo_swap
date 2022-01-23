@@ -12,8 +12,14 @@
 - [starter kit](https://github.com/dappuniversity/starter_kit)
 - [identicon.js](https://github.com/stewartlord/identicon.js)
 
+#### js prettier
+```console
+$ npm i -D eslint prettier prettier-eslint eslint-config-prettier eslint-plugin-prettier
+
+```
+
 #### install dependices
-```bash
+```console
 $ git clone https://github.com/dappuniversity/starter_kit eth_swap
 $ npm install
 $ npm audit fix
