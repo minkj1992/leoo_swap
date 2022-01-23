@@ -1,14 +1,14 @@
 const Token = artifacts.require("LoveToken");
-const EthSwap = artifacts.require("EthSwap");
+const LeooSwap = artifacts.require("LeooSwap");
 
 module.exports = async function(deployer) {
   const totalSupply = 1000000000; // 1 billion = 10억
   await deployer.deploy(Token, totalSupply);
   const token = await Token.deployed();
 
-  await deployer.deploy(EthSwap);
-  const ethSwap = await EthSwap.deployed();
+  await deployer.deploy(LeooSwap);
+  const leooSwap = await LeooSwap.deployed();
 
-  // Transfer all tokens to EthSwap ( 1 billion )
-  await token.transfer(ethSwap.address, totalSupply);
+  // Transfer all tokens to leooSwap ( 1 billion )
+  await token.transfer(leooSwap.address, totalSupply);
 };
