@@ -17,9 +17,9 @@ contract LoveToken is IERC20 {
     uint256 private _totalSupply;
 
     string public name = "Love Token";
-    uint8 public decimals = 18; // same value as wei
     string public symbol = "LOVE";
-
+    uint8 public decimals = 18; // same value as wei
+    
     constructor(uint256 _initialAmount) public {
         balances[msg.sender] = _initialAmount;
         _totalSupply = _initialAmount;

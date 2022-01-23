@@ -1,8 +1,10 @@
-const Token = artifacts.require("LoveToken");
-const LeooSwap = artifacts.require("LeooSwap");
+const Token = artifacts.require('LoveToken');
+const LeooSwap = artifacts.require('LeooSwap');
+const tokens = n => web3.utils.toWei(n, 'ether');
 
-module.exports = async function(deployer) {
-  const totalSupply = 1000000000; // 1 billion = 10억
+module.exports = async function (deployer) {
+  const totalSupply = tokens('1000000'); // 1 million wei
+
   await deployer.deploy(Token, totalSupply);
   const token = await Token.deployed();
 
