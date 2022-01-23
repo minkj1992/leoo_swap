@@ -1,10 +1,11 @@
 # Cryptocurrency
-> [refs](https://youtube.com/playlist?list=PLS5SEs8ZftgXHEtZ19lXmDQZm_1JKaBTK)
 
+> [refs](https://youtube.com/playlist?list=PLS5SEs8ZftgXHEtZ19lXmDQZm_1JKaBTK)
 
 [eip-20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md)
 
 ## setup
+
 - [Node.js](https://nodejs.org/en/)
 - [Ganache](https://www.trufflesuite.com/ganache)
 - [Truffle](https://www.trufflesuite.com/)
@@ -13,12 +14,14 @@
 - [identicon.js](https://github.com/stewartlord/identicon.js)
 
 #### js prettier
+
 ```console
 $ npm i -D eslint prettier prettier-eslint eslint-config-prettier eslint-plugin-prettier
 
 ```
 
 #### install dependices
+
 ```console
 $ git clone https://github.com/dappuniversity/starter_kit eth_swap
 $ npm install
@@ -38,8 +41,8 @@ $ truffle console
 truffle(development)> leooSwap = await LeooSwap.deployed()
 ```
 
-
 ## create Token
+
 > let's create token and transfer token to Leoo-Swap
 
 ```console
@@ -51,4 +54,10 @@ $ truffle console
 > balance = await token.balanceOf(leooSwap.address)
 > balance.toString()
 '1000000000'
+```
+
+## test
+
+```console
+$ truffle test
 ```

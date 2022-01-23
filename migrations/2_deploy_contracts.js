@@ -8,7 +8,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(Token, totalSupply);
   const token = await Token.deployed();
 
-  await deployer.deploy(LeooSwap);
+  await deployer.deploy(LeooSwap, token.address);
   const leooSwap = await LeooSwap.deployed();
 
   // Transfer all tokens to leooSwap ( 1 billion )
