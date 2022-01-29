@@ -3,17 +3,19 @@ require('chai').use(require('chai-as-promised')).should();
 
 const Token = artifacts.require('LoveToken');
 const LeooSwap = artifacts.require('LeooSwap');
-const INITIAL_LOVE_TOKEN_BALANCE = 1000000;
+const RATE = 100;
+const INITIAL_ETH_BALANCE = 1000000 / RATE;
 
 // Multiply token with wei scale
 // Actual value of loveToken is eth/100, but here does not matter, we just need wei format.
 const multiplyWEIScale = token => web3.utils.toWei(token, 'ether');
 const toWei = eth => web3.utils.toWei(eth, 'ether');
-const toLove = eth => eth * 100;
+const toLove = eth => eth * RATE;
+const toLoveToken = eth => multiplyWEIScale(String(toLove(eth)));
 
-contract('LeooSwap', ([deployer, investor]) => {
+contract('LeooSwap', ([_, investor]) => {
   let token, leooSwap;
-  const totalSupply = multiplyWEIScale(String(INITIAL_LOVE_TOKEN_BALANCE));
+  const totalSupply = toLoveToken(String(INITIAL_ETH_BALANCE));
 
   before(async () => {
     token = await Token.new(totalSupply);
@@ -56,7 +58,7 @@ contract('LeooSwap', ([deployer, investor]) => {
     const boughtEthAmount = 1;
 
     before(async () => {
-      // Purchase tokens before each example
+      // Buy tokens before each example.
       result = await leooSwap.buyTokens({
         from: investor,
         value: toWei(String(boughtEthAmount))
@@ -64,9 +66,7 @@ contract('LeooSwap', ([deployer, investor]) => {
     });
 
     it('Allows user to instantly purchase tokens from leooSwap for a fixed price', async () => {
-      const boughtLoveToken = multiplyWEIScale(
-        String(toLove(boughtEthAmount))
-      ).toString();
+      const boughtLoveToken = toLoveToken(String(boughtEthAmount)).toString();
       const investorBalance = await token.balanceOf(investor);
 
       assert.equal(investorBalance.toString(), boughtLoveToken);
@@ -75,9 +75,7 @@ contract('LeooSwap', ([deployer, investor]) => {
       const leooSwapBalance = await token.balanceOf(leooSwap.address);
       assert.equal(
         leooSwapBalance.toString(),
-        multiplyWEIScale(
-          String(INITIAL_LOVE_TOKEN_BALANCE - toLove(boughtEthAmount))
-        )
+        toLoveToken(String(INITIAL_ETH_BALANCE - boughtEthAmount))
       );
 
       // Check TokenPurchased event is emitted.
@@ -89,5 +87,25 @@ contract('LeooSwap', ([deployer, investor]) => {
       assert.equal(_amount.toString(), boughtLoveToken);
       assert.equal(_rate.toString(), '100');
     });
+  });
+
+  describe('Sell tokens', async () => {
+    let result;
+    const sellTokenAmount = toLove(1);
+
+    before(async () => {
+      await token.approve(
+        { from: investor },
+        leooSwap.address,
+        multiplyWEIScale(String(sellTokenAmount))
+      );
+      // Investor sells tokens
+      result = await token.sellTokens(
+        { from: investor },
+        multiplyWEIScale(String(sellTokenAmount))
+      );
+    });
+
+    it('Allows user to instantly sell tokens to leooSwap for a fixed price', async () => {});
   });
 });

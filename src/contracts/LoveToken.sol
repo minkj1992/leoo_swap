@@ -49,7 +49,9 @@ contract LoveToken is IERC20 {
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
-
+    // this --(ETH)--> to
+    // So _value is standard currency (i.g ETH)
+    // (Caution!) this does not mean "LoveToken's Wallet", it can be user or wallet or another wallet.
     function transfer(address _to, uint256 _value)
         public
         returns (bool success)
@@ -64,6 +66,8 @@ contract LoveToken is IERC20 {
         return true;
     }
 
+    // from --(loveToken)--> to
+    // So _value is this(loveToken) currency
     function transferFrom(
         address _from,
         address _to,

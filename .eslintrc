@@ -1,7 +1,0 @@
-{
-  "plugins": ["babel", "prettier"],
-  "extends": ["prettier", "prettier/@typescript-eslint"],
-  "rules": {
-    "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }]
-  }
-}
