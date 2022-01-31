@@ -53,7 +53,7 @@ contract LeooSwap {
 
         // do
         token.transferFrom(msg.sender, address(this), _amount);
-        token.transfer(msg.sender, etherAmount);
+        msg.sender.transfer(etherAmount);
 
         // Emit an event
         emit TokensSold(msg.sender, address(token), _amount, rate);

@@ -1,5 +1,7 @@
 const { assert } = require('chai');
-require('chai').use(require('chai-as-promised')).should();
+require('chai')
+  .use(require('chai-as-promised'))
+  .should();
 
 const Token = artifacts.require('LoveToken');
 const LeooSwap = artifacts.require('LeooSwap');
@@ -90,22 +92,80 @@ contract('LeooSwap', ([_, investor]) => {
   });
 
   describe('Sell tokens', async () => {
-    let result;
-    const sellTokenAmount = toLove(1);
+    const sellEthAmount = 1;
+    const sellTokenAmount = toLove(sellEthAmount);
+
+    let result,
+      beforeLeooSwapTokenBalance,
+      beforeLeooSwapEthBalance,
+      beforeInvestorTokenBalance,
+      beforeInvestorEthBalance;
 
     before(async () => {
+      beforeLeooSwapTokenBalance = await token.balanceOf(leooSwap.address);
+      beforeLeooSwapEthBalance = await web3.eth.getBalance(leooSwap.address);
+      beforeInvestorTokenBalance = await token.balanceOf(investor);
+      beforeInvestorEthBalance = await web3.eth.getBalance(investor);
+
       await token.approve(
-        { from: investor },
         leooSwap.address,
-        multiplyWEIScale(String(sellTokenAmount))
+        String(multiplyWEIScale(sellTokenAmount.toString())),
+        {
+          from: investor
+        }
       );
       // Investor sells tokens
-      result = await token.sellTokens(
-        { from: investor },
-        multiplyWEIScale(String(sellTokenAmount))
+      result = await leooSwap.sellTokens(
+        String(multiplyWEIScale(sellTokenAmount.toString())),
+        {
+          from: investor
+        }
       );
     });
 
-    it('Allows user to instantly sell tokens to leooSwap for a fixed price', async () => {});
+    it('Allows user to instantly sell tokens to ethSwap for a fixed price', async () => {
+      // Check investor token balance after purchase
+      let investorTokenBalance = await token.balanceOf(investor);
+
+      assert.equal(
+        investorTokenBalance.toString(),
+        String(
+          parseInt(beforeInvestorTokenBalance.toString()) -
+            parseInt(multiplyWEIScale(sellTokenAmount.toString()))
+        )
+      );
+
+      // Check leooSwap balance after purchase
+      const leooSwapTokenBalance = await token.balanceOf(leooSwap.address);
+      const leooSwapEthBalance = await web3.eth.getBalance(leooSwap.address);
+
+      assert.equal(
+        parseInt(leooSwapTokenBalance),
+        parseInt(beforeLeooSwapTokenBalance.toString()) +
+          parseInt(multiplyWEIScale(sellTokenAmount.toString()))
+      );
+
+      assert.equal(
+        parseInt(leooSwapEthBalance),
+        parseInt(beforeLeooSwapEthBalance.toString()) -
+          parseInt(multiplyWEIScale(sellEthAmount.toString()))
+      );
+
+      // Check logs to ensure event was emitted with correct data
+      const event = result.logs[0].args;
+      const { _account, _token, _amount, _rate } = event;
+      assert.equal(_account, investor);
+      assert.equal(_token, token.address);
+      assert.equal(
+        _amount.toString(),
+        multiplyWEIScale(sellTokenAmount.toString())
+      );
+      assert.equal(_rate.toString(), RATE);
+
+      // FAILURE: investor can't sell more tokens than they have
+      await leooSwap.sellTokens(String(multiplyWEIScale('500')), {
+        from: investor
+      }).should.be.rejected;
+    });
   });
 });
