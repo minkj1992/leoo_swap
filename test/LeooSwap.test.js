@@ -123,7 +123,7 @@ contract('LeooSwap', ([_, investor]) => {
       );
     });
 
-    it('Allows user to instantly sell tokens to ethSwap for a fixed price', async () => {
+    it('Allows user to instantly sell tokens to LeooSwap for a fixed price', async () => {
       // Check investor token balance after purchase
       let investorTokenBalance = await token.balanceOf(investor);
 

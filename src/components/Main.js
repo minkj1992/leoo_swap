@@ -1,99 +1,55 @@
 import React, { Component } from 'react';
-import tokenLogo from '../token-logo.png';
-import ethLogo from '../eth-logo.png';
+import { BuyForm, SellForm } from './Forms';
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      output: '0'
+      currentForm: 'buy'
     };
   }
 
   render() {
+    const content =
+      this.state.currentForm === 'buy' ? (
+        <BuyForm
+          ethBalance={this.props.ethBalance}
+          tokenBalance={this.props.tokenBalance}
+          buyTokens={this.props.buyTokens}
+        />
+      ) : (
+        <SellForm
+          ethBalance={this.props.ethBalance}
+          tokenBalance={this.props.tokenBalance}
+          sellTokens={this.props.sellTokens}
+        />
+      );
+
     return (
-      <div id="content">
+      <div id="content" className="mt-3">
+        <div className="d-flex justify-content-between mb-3">
+          <button
+            className="btn btn-success"
+            onClick={event => {
+              this.setState({ currentForm: 'buy' });
+            }}
+          >
+            Buy
+          </button>
+          <span className="text-muted">
+            &lt; {this.state.currentForm.toUpperCase()} &gt;
+          </span>
+          <button
+            className="btn btn-danger"
+            onClick={event => {
+              this.setState({ currentForm: 'sell' });
+            }}
+          >
+            Sell
+          </button>
+        </div>
         <div className="card mb-4">
-          <div className="card-body">
-            <form
-              className="mb-3"
-              onSubmit={event => {
-                event.preventDefault();
-                const etherAmount = window.web3.utils.toWei(
-                  this.input.value.toString(),
-                  'Ether'
-                );
-                this.props.buyTokens(etherAmount);
-              }}
-            >
-              <div>
-                <label className="float-left">
-                  <b>Input</b>
-                </label>
-                <span className="float-right text-muted">
-                  Balance:{' '}
-                  {window.web3.utils.fromWei(this.props.ethBalance, 'Ether')}
-                </span>
-              </div>
-              <div className="input-group mb-4">
-                <input
-                  type="text"
-                  onChange={event => {
-                    const etherAmount = this.input.value.toString();
-                    this.setState({
-                      output: etherAmount * 100
-                    });
-                  }}
-                  ref={input => {
-                    this.input = input;
-                  }}
-                  className="form-control form-control-lg"
-                  placeholder="0"
-                  required
-                />
-                <div className="input-group-append">
-                  <div className="input-group-text">
-                    <img src={ethLogo} height="32" alt="" />
-                    &nbsp;&nbsp;&nbsp; ETH
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="float-left">
-                  <b>Output</b>
-                </label>
-                <span className="float-right text-muted">
-                  Balance:{' '}
-                  {window.web3.utils.fromWei(this.props.tokenBalance, 'Ether')}
-                </span>
-              </div>
-              <div className="input-group mb-2">
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="0"
-                  value={this.state.output}
-                  disabled
-                />
-                <div className="input-group-append">
-                  <div className="input-group-text">
-                    <img src={tokenLogo} height="32" alt="" />
-                    &nbsp; ❤️
-                  </div>
-                </div>
-              </div>
-              <div className="mb-5">
-                <span className="float-left text-muted">Exchange Rate</span>
-                <span className="float-right text-muted">1 ETH = 100 ❤️</span>
-              </div>
-              <button
-                type="submit"
-                className="btn btn-primary btn-block btn-lg"
-              >
-                SWAP
-              </button>
-            </form>
-          </div>
+          <div className="card-body">{content}</div>
         </div>
       </div>
     );
