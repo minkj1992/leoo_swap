@@ -10,7 +10,7 @@
 > [origin .mov file link](./static/swap.mov)
 
 <p align="center">
-  <img src="./static/swap-480.gif"/>
+  <img src="./static/swap.gif"/>
 </p>
 
 ## dependices
@@ -66,5 +66,5 @@ open http://localhost:3000
 This is about how to setup ganache and metamask account's eth balance.
 
 <p align="center">
-  <img src="./static/local_setup-480.gif"/>
+  <img src="./static/local_setup.gif"/>
 </p>
